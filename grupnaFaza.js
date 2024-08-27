@@ -29,7 +29,8 @@ const simulacijaGrupneFaze = () => {
         for (let i = 0; i < timovi.length; i++){
             for (let j = i + 1; j < timovi.length; i++) {
                 const rezultat = simulacijaIgre(timovi[i], timovi[j]);
-                console.log(`Rezultat: ${rezultat.tim1.rezultat}: ${rezultat.tim2.rezultat}`);
+                console.log(`        ${rezultat.tim1.ime} -${rezultat.tim2.ime}
+                    (${rezultat.tim1.rezultat}: ${rezultat.tim2.rezultat})`);
             }
         }
     });
