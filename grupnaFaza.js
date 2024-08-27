@@ -41,7 +41,7 @@ const simulacijaIgre = (team1, team2) => {
     };
 };
 
-const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni, protivnik) => {
+const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni) => {
     //Proverava da li tim vec postoji u tabeli, ako ne inicijalizujem ga
     if (!polozaji[tim.ime]) {
         //Kreira se novi objekat sa navedenim svojstvima
@@ -65,7 +65,45 @@ const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni, protivn
         polozaji[tim.ime].porazi += 1;
 };
 
+const razlikaPoena = (timovi) => {
+    const razlike = {};
 
+    for (let i = 0; i < timovi.length; i++) {
+        for (let j = i + 1; j < timovi.length; j++) {
+            const tim1 = timovi[i];
+            const tim2 = timovi[j];
+            if (!razlike[tim1.ime])
+                razlike[tim1.ime] = 0;
+            if (!razlike[tim2.ime])
+                razlike[tim2.ime] = 0;
+
+            if (tim1.rezultat > tim2.rezultat) {
+                razlike[tim1.ime] += tim1.rezultat - tim2.rezultat;
+                razlike[tim2.ime] -= tim1.rezultat - tim2.rezultat;
+            }
+            else {
+                razlike[tim1.ime] -= tim2.rezultat - tim1.rezultat;
+                razlike[tim2.ime] += tim2.rezultat - tim1.rezultat;
+            }
+        }
+    }
+
+    return razlike;
+};
+
+//Sortira timove na osnovu broja bodova, kos razlike i broja postignutih koseva
+const sortirajTimove = (timovi) => {
+    return timovi.sort((a, b) => {
+        if (a.poeni !== b.poeni)
+            return b.poeni - a.poeni;
+        const kosRazlikaA = a.postignuto - a.primljeno;
+        const kosRazlikaB = b.postignuto - b.primljeno;
+        if (kosRazlikaA !== kosRazlikaB)
+            return kosRazlikaB - kosRazlikaA;
+        
+        return b.postignuto - a.postignuto;
+    });
+};
 
 const simulacijaGrupneFaze = () => {
     //Objekat u kome se beleze rezultati i statistika timova
@@ -98,23 +136,42 @@ const simulacijaGrupneFaze = () => {
 
     //Stampa konacan plasman tabela u grupama
     console.log("\nKonacan plasman u grupama: ");
+    const sviTimovi = [];
     Object.keys(groups).forEach(group => {
-        const grupnaFaza = Object.values(polozaji[group]).sort((a, b) => {
-            if (a.poeni !== b.poeni)
-                return b.poeni - a.poeni;
-            const kosRazlikaA = a.postignuto - a.primljeno;
-            const kosRazlikaB = b.postignuto - b.primljeno;
-            if (kosRazlikaA !== kosRazlikaB)
-                return kosRazlikaB - kosRazlikaA;
-            return b.postignuto - a.postignuto;
-        });
+        const timovi = Object.values(polozaji[group]);
+        const sortiraniTimovi = sortirajTimove(timovi);
 
         console.log(`   Grupa ${group} (Tim - pobede / porazi / bodovi / postignuto koševa / primljeno koševa / koš razlika): `);
-        grupnaFaza.forEach((tim, index) => {
+        sortiraniTimovi.forEach((tim, index) => {
             const kosRazlika = tim.postignuto - tim.primljeno;
             console.log(`       ${index + 1}. ${tim.ime}: ${tim.pobede} / ${tim.porazi} / ${tim.poeni} / ${tim.postignuto} / ${tim.primljeno} / ${kosRazlika > 0 ? '+' : ''}${kosRazlika}`);
-        })
-    })
+            if (index < 3)
+                sviTimovi.push({ ...tim, grupa: group, pozicija: index + 1 });
+        });
+    });
+    //Rangiranje timova iz svih grupa
+    console.log("\nRangiranje timova za eliminacionu fazu...");
+    const rangiraniTimovi = [];
+    const rangiraj = (pozicija) => {
+        const timoviZaRangiranje = sviTimovi.filter(tim => tim.pozicija == pozicija);
+        const sortirani = sortirajTimove(timoviZaRangiranje);
+        sortirani.forEach((tim, index) => {
+            rangiraniTimovi.push({ ...tim, rang: rangiraniTimovi.length + 1 });
+        });
+    };
+
+    rangiraj(1);
+    rangiraj(2);
+    rangiraj(3);
+
+    //Prikaz rangiranih timova
+    console.log("\nTimovi koji su prosli u eliminacionu fazu: ");
+    rangiraniTimovi.slice(0, 8).forEach((tim) => {
+        console.log(`   ${tim.rang}. ${tim.ime} iz Grupe ${tim.grupa}`);
+    });
+    if (rangiraniTimovi[8]) {
+        console.log(`   9. ${rangiraniTimovi[8].ime} iz grupe ${rangiraniTimovi[8].grupa} - ne prolazi dalje`)
+    }
 };
 
 module.exports = {
