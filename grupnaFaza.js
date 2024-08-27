@@ -66,6 +66,26 @@ const simulacijaGrupneFaze = () => {
             }
         }
     });
+
+    //Stampa konacan plasman tabela u grupama
+    console.log("\nKonacan plasman u grupama: ");
+    Object.keys(groups).forEach(group => {
+        const grupnaFaza = Object.values(polozaji[group]).sort((a, b) => {
+            if (a.poeni !== b.poeni)
+                return b.poeni - a.poeni;
+            const kosRazlikaA = a.postignuto - a.primljeno;
+            const kosRazlikaB = b.postignuto - b.primljeno;
+            if (kosRazlikaA !== kosRazlikaB)
+                return kosRazlikaB - kosRazlikaA;
+            return b.postignuto - a.postignuto;
+        });
+
+        console.log(`   Grupa ${group} (Tim - pobede / porazi / bodovi / postignuto koševa / primljeno koševa / koš razlika): `);
+        grupnaFaza.forEach((tim, index) => {
+            const kosRazlika = tim.postignuto - tim.primljeno;
+            console.log(`       ${index + 1}. ${tim.ime}: ${tim.pobede} / ${tim.porazi} / ${tim.poeni} / ${tim.postignuto} / ${tim.primljeno} / ${kosRazlika > 0 ? '+' : ''}${kosRazlika}`);
+        })
+    })
 };
 
 module.exports = {
