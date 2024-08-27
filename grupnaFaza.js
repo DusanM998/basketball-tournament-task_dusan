@@ -1,11 +1,31 @@
 const groups = require('./groups.json'); //Za ucitavanje JSON datoteke groups.json
+const exibitions = require('./exibitions.json');
+
+const racunajFormu = (teamISOCode) => {
+    const mecevi = exibitions[teamISOCode];
+
+    if (!mecevi)
+        return 0; //Ako nema prethodno odigranih meceva, forma je 0
+
+    let forma = 0;
+    mecevi.forEach(mec => {
+        const [domacinPoeni, protivnikPoeni] = mec.Result.split('-').map(Number);
+        forma += domacinPoeni - protivnikPoeni; //Na formu utice razlika u poenima
+    });
+
+    return forma / mecevi.length; //Procesna forma na osnovu odigranih prethodnih meceva
+}
 
 const simulacijaIgre = (team1, team2) => {
     const verovatnoca1 = team1.FIBARanking / (team1.FIBARanking + team2.FIBARanking); //Verovatnoca pobede prvog tima
     /* broj poena prvog tima, generise se kao random broj izmedju 70 i 120, osnova je 70, a dodatak random broj izmedju 0 i 50 */
     /* deo (1 - verovatnoca) * 10 se zasniva na verovatnoci pobede protivnika. Sto je veca verovatnoca pobede protivnika, tim ce postici manje poena */
-    const rezultat1 = Math.floor(Math.random() * 50) + 70 + Math.floor((1 - verovatnoca1) * 10);
-    const rezultat2 = Math.floor(Math.random() * 50) + 70 + Math.floor(verovatnoca1 * 10);
+
+    const forma1 = racunajFormu(team1.ISOCode);
+    const forma2 = racunajFormu(team2.ISOCode);
+
+    const rezultat1 = Math.floor(Math.random() * 50) + 70 + Math.floor((1 - verovatnoca1 + forma1 * 0.05) * 10);
+    const rezultat2 = Math.floor(Math.random() * 50) + 70 + Math.floor((verovatnoca1 + forma2 * 0.05) * 10);
 
     return {
         tim1: {
@@ -21,7 +41,7 @@ const simulacijaIgre = (team1, team2) => {
     };
 };
 
-const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni) => {
+const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni, protivnik) => {
     //Proverava da li tim vec postoji u tabeli, ako ne inicijalizujem ga
     if (!polozaji[tim.ime]) {
         //Kreira se novi objekat sa navedenim svojstvima
@@ -45,6 +65,8 @@ const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni) => {
         polozaji[tim.ime].porazi += 1;
 };
 
+
+
 const simulacijaGrupneFaze = () => {
     //Objekat u kome se beleze rezultati i statistika timova
     const polozaji = {};
@@ -61,8 +83,15 @@ const simulacijaGrupneFaze = () => {
             for (let j = i + 1; j < timovi.length; j++) {
                 const rezultatIgra = simulacijaIgre(timovi[i], timovi[j]);
                 console.log(`        ${rezultatIgra.tim1.ime} - ${rezultatIgra.tim2.ime} (${rezultatIgra.tim1.rezultat}: ${rezultatIgra.tim2.rezultat})`);
-                azurirajTabelu(polozaji[group], rezultatIgra.tim1, rezultatIgra.tim1.pobeda, rezultatIgra.tim1.rezultat, rezultatIgra.tim2.rezultat);
-                azurirajTabelu(polozaji[group], rezultatIgra.tim2, rezultatIgra.tim2.pobeda, rezultatIgra.tim2.rezultat, rezultatIgra.tim1.rezultat);
+                azurirajTabelu(polozaji[group],
+                    rezultatIgra.tim1, rezultatIgra.tim1.pobeda,
+                    rezultatIgra.tim1.rezultat,
+                    rezultatIgra.tim2.rezultat
+                );
+                azurirajTabelu(polozaji[group],
+                    rezultatIgra.tim2, rezultatIgra.tim2.pobeda,
+                    rezultatIgra.tim2.rezultat, 
+                    rezultatIgra.tim1.rezultat);
             }
         }
     });
