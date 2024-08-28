@@ -181,7 +181,29 @@ const simulacijaGrupneFaze = () => {
     if (rangiraniTimovi[8]) {
         console.log(`   9. ${rangiraniTimovi[8].ime} iz Grupe ${rangiraniTimovi[8].grupa} - ne prolazi dalje`)
     }
+
+    return rangiraniTimovi.slice(0, 8);
 };
+
+const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+};
+
+const formiranjeZreba = (rangiraniTimovi) => {
+    const sesirD = rangiraniTimovi.slice(0, 2);
+    const sesirE = rangiraniTimovi.slice(2, 4);
+    const sesirF = rangiraniTimovi.slice(4, 6);
+    const sesirG = rangiraniTimovi.slice(6, 8);
+
+    console.log("\nŠeširi:");
+    console.log("    Šešir D");
+    sesirD.forEach(tim => console.log(`        ${tim.ime}`));
+}
+
 
 module.exports = {
     simulacijaGrupneFaze
