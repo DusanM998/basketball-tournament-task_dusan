@@ -9,6 +9,8 @@ const shuffleArray = (array) => {
 };
 
 const formiranjeZreba = (rangiraniTimovi) => {
+    //Rangirane timove svrstava u sesire
+    //Prva dva tima iz niza idu u sesir D, itd
     const sesirD = rangiraniTimovi.slice(0, 2);
     const sesirE = rangiraniTimovi.slice(2, 4);
     const sesirF = rangiraniTimovi.slice(4, 6);
@@ -23,6 +25,8 @@ const formiranjeZreba = (rangiraniTimovi) => {
     sesirF.forEach(tim => console.log(`        ${tim.ime}`));
     console.log("    Šešir G");
     sesirG.forEach(tim => console.log(`        ${tim.ime}`));
+
+    
 }
 
 module.exports = {
