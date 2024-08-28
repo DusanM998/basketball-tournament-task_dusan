@@ -27,6 +27,10 @@ const simulacijaIgre = (team1, team2) => {
     const rezultat1 = Math.floor(Math.random() * 50) + 70 + Math.floor((1 - verovatnoca1 + forma1 * 0.05) * 10);
     const rezultat2 = Math.floor(Math.random() * 50) + 70 + Math.floor((verovatnoca1 + forma2 * 0.05) * 10);
 
+    //console.log(`Rezultat: ${rezultat1} - ${rezultat2}`);
+    //console.log(`Forma: ${forma1} - ${forma2}`);
+
+    //Vraca objekat koji sadrzi info. o oba tima nakon odigrane utakmice
     return {
         tim1: {
             ime: team1.Team,
@@ -36,13 +40,13 @@ const simulacijaIgre = (team1, team2) => {
         tim2: {
             ime: team2.Team,
             rezultat: rezultat2,
-            pobeda: rezultat2 > rezultat1
+            pobeda: rezultat2 > rezultat1 //Ako je rezultat2 > pobeda je true
         }
     };
 };
 
 const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni) => {
-    //Proverava da li tim vec postoji u tabeli, ako ne inicijalizujem ga
+    //Proverava da li u objektu polozaji postoji unos za tim 'tim.ime'
     if (!polozaji[tim.ime]) {
         //Kreira se novi objekat sa navedenim svojstvima
         polozaji[tim.ime] = {
@@ -56,7 +60,7 @@ const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni) => {
     }
     polozaji[tim.ime].postignuto += rezultat;
     polozaji[tim.ime].primljeno += protivnikPoeni;
-    //ternarni operator za if-else (zavisi od parametra provera: 2 ako je true, 1 ako je false)
+    //ternarni operator za if-else (zavisi od parametra pobeda: 2 ako je true, 1 ako je false)
     polozaji[tim.ime].poeni += pobeda ? 2 : 1;
     //Azurira ukupan broj pobeda (ili poraza) za tim
     if (pobeda)
@@ -65,37 +69,17 @@ const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni) => {
         polozaji[tim.ime].porazi += 1;
 };
 
-const razlikaPoena = (timovi) => {
-    const razlike = {};
-
-    for (let i = 0; i < timovi.length; i++) {
-        for (let j = i + 1; j < timovi.length; j++) {
-            const tim1 = timovi[i];
-            const tim2 = timovi[j];
-            if (!razlike[tim1.ime])
-                razlike[tim1.ime] = 0;
-            if (!razlike[tim2.ime])
-                razlike[tim2.ime] = 0;
-
-            if (tim1.rezultat > tim2.rezultat) {
-                razlike[tim1.ime] += tim1.rezultat - tim2.rezultat;
-                razlike[tim2.ime] -= tim1.rezultat - tim2.rezultat;
-            }
-            else {
-                razlike[tim1.ime] -= tim2.rezultat - tim1.rezultat;
-                razlike[tim2.ime] += tim2.rezultat - tim1.rezultat;
-            }
-        }
-    }
-
-    return razlike;
-};
-
 //Sortira timove na osnovu broja bodova, kos razlike i broja postignutih koseva
 const sortirajTimove = (timovi) => {
+    /*Ako sort vrati negativan br. a je ispred b*/
+    /*Ako vrati pozitivan, b je ispred a, a ako vrati 0 pozicija im je ista*/
     return timovi.sort((a, b) => {
+        //Prvi kriterijum za poredjenje - broj bodova koje je tim ostvario
         if (a.poeni !== b.poeni)
+            //Ako b ima vise poena od a (b je pozitivno) pa ce ici ispred a u sortiranju
             return b.poeni - a.poeni;
+        
+        //Ako su timovi isti po broju bodova porede se po kos razlici
         const kosRazlikaA = a.postignuto - a.primljeno;
         const kosRazlikaB = b.postignuto - b.primljeno;
         if (kosRazlikaA !== kosRazlikaB)
@@ -170,7 +154,7 @@ const simulacijaGrupneFaze = () => {
         console.log(`   ${tim.rang}. ${tim.ime} iz Grupe ${tim.grupa}`);
     });
     if (rangiraniTimovi[8]) {
-        console.log(`   9. ${rangiraniTimovi[8].ime} iz grupe ${rangiraniTimovi[8].grupa} - ne prolazi dalje`)
+        console.log(`   9. ${rangiraniTimovi[8].ime} iz Grupe ${rangiraniTimovi[8].grupa} - ne prolazi dalje`)
     }
 };
 
