@@ -9,6 +9,9 @@ const racunajFormu = (teamISOCode) => {
 
     let forma = 0;
     mecevi.forEach(mec => {
+        //Deli string Result na poene jednog i drugog tima, a map prolazi kroz svaki
+        //od tih stringova rezultata i sa Number ih konvertuje u brojeve
+        //Ovde se rezultat split f-je dodeljuje domacinPoeni, protivnikPoeni varijablama
         const [domacinPoeni, protivnikPoeni] = mec.Result.split('-').map(Number);
         forma += domacinPoeni - protivnikPoeni; //Na formu utice razlika u poenima
     });
@@ -45,11 +48,12 @@ const simulacijaIgre = (team1, team2) => {
     };
 };
 
-const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni) => {
-    //Proverava da li u objektu polozaji postoji unos za tim 'tim.ime'
-    if (!polozaji[tim.ime]) {
+const azurirajTabelu = (tablePosition, tim, pobeda, rezultat, protivnikPoeni) => {
+    //Proverava da li u objektu tablePosition postoji unos za tim 'tim.ime'
+    if (!tablePosition[tim.ime]) {
         //Kreira se novi objekat sa navedenim svojstvima
-        polozaji[tim.ime] = {
+        //Sadrzi informacije o svim timovima, a tim.ime omogucava pristup pojedinom timu
+        tablePosition[tim.ime] = {
             ime: tim.ime,
             pobede: 0,
             porazi: 0,
@@ -58,15 +62,17 @@ const azurirajTabelu = (polozaji, tim, pobeda, rezultat, protivnikPoeni) => {
             primljeno: 0
         };
     }
-    polozaji[tim.ime].postignuto += rezultat;
-    polozaji[tim.ime].primljeno += protivnikPoeni;
+    //Na ukupan broj poena koje tim ima do sada, dodaje se rezultat poslednje odigrane utakmice
+    tablePosition[tim.ime].postignuto += rezultat;
+    //...kao i primljene poene
+    tablePosition[tim.ime].primljeno += protivnikPoeni;
     //ternarni operator za if-else (zavisi od parametra pobeda: 2 ako je true, 1 ako je false)
-    polozaji[tim.ime].poeni += pobeda ? 2 : 1;
+    tablePosition[tim.ime].poeni += pobeda ? 2 : 1;
     //Azurira ukupan broj pobeda (ili poraza) za tim
     if (pobeda)
-        polozaji[tim.ime].pobede += 1;
+        tablePosition[tim.ime].pobede += 1;
     else
-        polozaji[tim.ime].porazi += 1;
+        tablePosition[tim.ime].porazi += 1;
 };
 
 //Sortira timove na osnovu broja bodova, kos razlike i broja postignutih koseva
@@ -94,15 +100,19 @@ const simulacijaGrupneFaze = () => {
     const polozaji = {};
     /*Prolazi kroz sve grupe*/
     /* Object.keys() vraca niz svih kljuceva datog objekta (groups objekat u ovom slucaju) */
-    /*Konkretno, vraca A, B i C */
+    /*Konkretno, vraca A, B i C grupe*/
     /*forEach kasnije prolazi kroz svaki element niza koji je vratio Object.keys()*/
     Object.keys(groups).forEach(group => {
         console.log(`Grupna faza - I kolo:\n    Grupa ${group}:`);
         polozaji[group] = {};
+        //Predstavlja niz svih timova u trenutnoj grupi
         const timovi = groups[group];
 
+        //Prva petlja prolazi kroz svaki tim u grupi
         for (let i = 0; i < timovi.length; i++) {
+            //Prolazi kroz sve ostale timove u grupi koji nisu igrali medjusobno sa timom sa indeksom i
             for (let j = i + 1; j < timovi.length; j++) {
+                //Vraca objekat koji sadrzi info. o rezultatu utakmice odigranih timova
                 const rezultatIgra = simulacijaIgre(timovi[i], timovi[j]);
                 console.log(`        ${rezultatIgra.tim1.ime} - ${rezultatIgra.tim2.ime} (${rezultatIgra.tim1.rezultat}: ${rezultatIgra.tim2.rezultat})`);
                 azurirajTabelu(polozaji[group],
@@ -120,8 +130,10 @@ const simulacijaGrupneFaze = () => {
 
     //Stampa konacan plasman tabela u grupama
     console.log("\nKonacan plasman u grupama: ");
+    //Niz u koji se smestaju timovi koji su medju prva 3 u svojim grupama
     const sviTimovi = [];
     Object.keys(groups).forEach(group => {
+        //Cuva sve timove u odredjenoj grupi, zatim ih sortira
         const timovi = Object.values(polozaji[group]);
         const sortiraniTimovi = sortirajTimove(timovi);
 
@@ -129,27 +141,40 @@ const simulacijaGrupneFaze = () => {
         sortiraniTimovi.forEach((tim, index) => {
             const kosRazlika = tim.postignuto - tim.primljeno;
             console.log(`       ${index + 1}. ${tim.ime}: ${tim.pobede} / ${tim.porazi} / ${tim.poeni} / ${tim.postignuto} / ${tim.primljeno} / ${kosRazlika > 0 ? '+' : ''}${kosRazlika}`);
+            //Prva 3 tima iz svake grupe se dodaju u niz sviTimovi
+            //Niz svi timovi se koristi kasnije za rangiranje timova za eliminacionu fazu
             if (index < 3)
+                //Dodaje novi element na kraj niza sviTimovi
+                //...tim(spread operator) kopira sva svojstva postojeceg objekta tim u novi objekat
+                //Novom objektu se dodaje i grupa u kojoj je tim bio, kao i pozicija u grupi nakon sortiranja
                 sviTimovi.push({ ...tim, grupa: group, pozicija: index + 1 });
         });
     });
     //Rangiranje timova iz svih grupa
     console.log("\nRangiranje timova za eliminacionu fazu...");
+    //Niz u kome se smestaju rangirani timovi za eliminacionu fazu
     const rangiraniTimovi = [];
+    //Funkcija za sortiranje timova na osnovu njihove pozicije u grupnoj fazi
     const rangiraj = (pozicija) => {
+        //Filtrira timove prema pozicijama na tabeli
         const timoviZaRangiranje = sviTimovi.filter(tim => tim.pozicija == pozicija);
+        //Nakon filtriranja sortira te filtrirane timove
         const sortirani = sortirajTimove(timoviZaRangiranje);
         sortirani.forEach((tim, index) => {
+            //U nizu rangiraniTimovi dodaje timove i dodeljuje im se rang za eliminacionu fazu
             rangiraniTimovi.push({ ...tim, rang: rangiraniTimovi.length + 1 });
         });
     };
 
+    //Na kraju se rangiraju timovi iz svih grupa prema njihovoj poziciji
     rangiraj(1);
     rangiraj(2);
     rangiraj(3);
 
     //Prikaz rangiranih timova
     console.log("\nTimovi koji su prosli u eliminacionu fazu: ");
+    //Slice metoda vraca novi niz koji sadrzi elemente originalnog niza rangiraniTimovi
+    // s tim sto uzima u obzir prvih osam timova iz niza
     rangiraniTimovi.slice(0, 8).forEach((tim) => {
         console.log(`   ${tim.rang}. ${tim.ime} iz Grupe ${tim.grupa}`);
     });
