@@ -1,4 +1,4 @@
-const { simulacijaGrupneFaze } = require("./grupnaFaza.js");
+//const { simulacijaGrupneFaze } = require("./grupnaFaza.js");
 
 const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -26,7 +26,31 @@ const formiranjeZreba = (rangiraniTimovi) => {
     console.log("    Šešir G");
     sesirG.forEach(tim => console.log(`        ${tim.ime}`));
 
-    
+    const paroviCetvrtfinala = [];
+
+    const ukrstiTimove = (timoviIzSesira1, timoviIzSesira2) => {
+        shuffleArray(timoviIzSesira2); //Random shuffle za drugi sesir
+
+        timoviIzSesira1.forEach(tim1 => {
+            //Nalazi protivnika koji nije iz iste grupe
+            const protivnik = timoviIzSesira2.find(tim2 => tim1.grupa !== tim2.grupa);
+            paroviCetvrtfinala.push([tim1, protivnik]); //Ukrsta ih u cetvrtfinalu
+            timoviIzSesira2.splice(timoviIzSesira2.indexOf(protivnik), 1); //Iz 2. sesira uklanja protivnika koji vec ima para
+        });
+    };
+
+    //Ukrsta timove
+    ukrstiTimove(sesirD, sesirG);
+    ukrstiTimove(sesirE, sesirF);
+
+    console.log("\nEliminaciona faza: ");
+
+    console.log("\nParovi cetvrtfinala: ");
+    paroviCetvrtfinala.forEach((parovi, index) => {
+        const [tim1, tim2] = parovi;
+        console.log(`   ${index + 1}. Par: ${tim1.ime} - ${tim2.ime}`);
+    });
+
 }
 
 module.exports = {
