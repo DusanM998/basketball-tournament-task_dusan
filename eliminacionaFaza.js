@@ -121,13 +121,13 @@ const formiranjeZreba = (rangiraniTimovi) => {
 
     paroviCetvrtfinala.forEach((par, index) => {
         const [tim1, tim2] = par;
-        console.log(par);
+        //console.log(par);
         console.log(`   \nUtakmica ${index + 1}. Par: ${tim1.ime} - ${tim2.ime}`);
         const rezultat = simulirajCetvrtfinale(par[0], par[1]);
-        console.log(par[0], par[1]);
-        console.log(rezultat);
+        //console.log(par[0], par[1]);
+        //console.log(rezultat);
         const pobednik = rezultat.tim1.pobeda ? rezultat.tim1 : rezultat.tim2;
-        console.log(pobednik);
+        //console.log(pobednik);
         const porazen = rezultat.tim1.pobeda ? rezultat.tim2 : rezultat.tim1;
 
         console.log(`   ${index + 1}. Par: ${rezultat.tim1.ime} - ${rezultat.tim2.ime} | Rezultat: ${rezultat.tim1.rezultat} - ${rezultat.tim2.rezultat} | Pobednik: ${pobednik.ime}`);
@@ -149,13 +149,13 @@ const formiranjeZreba = (rangiraniTimovi) => {
 
     paroviPolufinala.forEach((parovi, index) => {
         const [prviPar, drugiPar] = parovi;
-        console.log(parovi);
+        //console.log(parovi);
         const rezultatPolufinala1 = simulacijaPolufinalaFinala(prviPar, drugiPar);
-        console.log(rezultatPolufinala1);
+        //console.log(rezultatPolufinala1);
         const pobednikPolufinala = rezultatPolufinala1.tim1.pobeda ? rezultatPolufinala1.tim1 : rezultatPolufinala1.tim2;
         const porazeniPolufinala = rezultatPolufinala1.tim1.pobeda ? rezultatPolufinala1.tim2 : rezultatPolufinala1.tim1;
 
-        console.log(`   Pobednik meča: ${rezultatPolufinala1.tim1.ime} - ${rezultatPolufinala1.tim2.ime} ide u Finale! | Rezultat: ${rezultatPolufinala1.tim1.rezultat} - ${rezultatPolufinala1.tim2.rezultat} | Pobednik: ${pobednikPolufinala.ime}`);
+        console.log(`   Pobednik meča: ${rezultatPolufinala1.tim1.ime} - ${rezultatPolufinala1.tim2.ime} ide u Finale! | Rezultat: ${rezultatPolufinala1.tim1.rezultat} - ${rezultatPolufinala1.tim2.rezultat} | Pobednik: ${pobednikPolufinala.ime} je u Finalu.`);
 
         finalisti.push(pobednikPolufinala);
         porazeniPolufinale.push(porazeniPolufinala);
