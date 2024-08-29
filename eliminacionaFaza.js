@@ -163,9 +163,9 @@ const formiranjeZreba = (rangiraniTimovi) => {
 
     // Utakmica za treće mesto
     console.log("\nUtakmica za treće mesto:");
-    const rezultatZaTrećeMesto = simulacijaPolufinalaFinala(porazeniPolufinale[0], porazeniPolufinale[1]);
-    const bronzanaMedalja = rezultatZaTrećeMesto.tim1.pobeda ? rezultatZaTrećeMesto.tim1 : rezultatZaTrećeMesto.tim2;
-    console.log(`   ${rezultatZaTrećeMesto.tim1.ime} - ${rezultatZaTrećeMesto.tim2.ime} | Rezultat: ${rezultatZaTrećeMesto.tim1.rezultat} - ${rezultatZaTrećeMesto.tim2.rezultat} | Bronza: ${bronzanaMedalja.ime}`);
+    const rezultatZaTreceMesto = simulacijaPolufinalaFinala(porazeniPolufinale[0], porazeniPolufinale[1]);
+    const bronzanaMedalja = rezultatZaTreceMesto.tim1.pobeda ? rezultatZaTreceMesto.tim1 : rezultatZaTreceMesto.tim2;
+    console.log(`   ${rezultatZaTreceMesto.tim1.ime} - ${rezultatZaTreceMesto.tim2.ime} | Rezultat: ${rezultatZaTreceMesto.tim1.rezultat} - ${rezultatZaTreceMesto.tim2.rezultat} | Bronza: ${bronzanaMedalja.ime}`);
 
     // Finale
     console.log("\nFinale:");
