@@ -187,5 +187,6 @@ const simulacijaGrupneFaze = () => {
 
 
 module.exports = {
-    simulacijaGrupneFaze
+    simulacijaGrupneFaze,
+    simulacijaIgre
 }

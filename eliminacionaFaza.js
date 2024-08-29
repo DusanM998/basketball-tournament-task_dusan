@@ -1,4 +1,4 @@
-//const { simulacijaGrupneFaze } = require("./grupnaFaza.js");
+const { simulacijaGrupneFaze, simulacijaIgre } = require("./grupnaFaza.js");
 
 const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -45,12 +45,27 @@ const formiranjeZreba = (rangiraniTimovi) => {
 
     console.log("\nEliminaciona faza: ");
 
-    console.log("\nParovi cetvrtfinala: ");
-    paroviCetvrtfinala.forEach((parovi, index) => {
-        const [tim1, tim2] = parovi;
+    console.log("\nParovi četvrtfinala: ");
+
+    const paroviPolufinala = [];
+
+    paroviCetvrtfinala.forEach((par, index) => {
+        const [tim1, tim2] = par;
         console.log(`   ${index + 1}. Par: ${tim1.ime} - ${tim2.ime}`);
+        if (index % 2 === 0) {
+            //Prva dva para idu u jedan polufinalni par, sledeca dva u drugi
+            paroviPolufinala.push([par]);
+        }
+        else {
+            paroviPolufinala[paroviPolufinala.length - 1].push(par);
+        }
     });
 
+    console.log("\nParovi polufinala: ");
+    paroviPolufinala.forEach((parovi, index) => {
+        const [prviPar, drugiPar] = parovi;
+        console.log(`   Pobednik meča: ${prviPar[0].ime} - ${prviPar[1].ime} vs Pobednik meča: ${drugiPar[0].ime} - ${drugiPar[1].ime}`);
+    });
 }
 
 module.exports = {
