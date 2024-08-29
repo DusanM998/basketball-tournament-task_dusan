@@ -107,6 +107,7 @@ const simulacijaGrupneFaze = () => {
         polozaji[group] = {};
         //Predstavlja niz svih timova u trenutnoj grupi
         const timovi = groups[group];
+        //console.log(timovi);
 
         //Prva petlja prolazi kroz svaki tim u grupi
         for (let i = 0; i < timovi.length; i++) {
@@ -114,14 +115,17 @@ const simulacijaGrupneFaze = () => {
             for (let j = i + 1; j < timovi.length; j++) {
                 //Vraca objekat koji sadrzi info. o rezultatu utakmice odigranih timova
                 const rezultatIgra = simulacijaIgre(timovi[i], timovi[j]);
+                //console.log(rezultatIgra);
                 console.log(`        ${rezultatIgra.tim1.ime} - ${rezultatIgra.tim2.ime} (${rezultatIgra.tim1.rezultat}: ${rezultatIgra.tim2.rezultat})`);
                 azurirajTabelu(polozaji[group],
-                    rezultatIgra.tim1, rezultatIgra.tim1.pobeda,
+                    rezultatIgra.tim1,
+                    rezultatIgra.tim1.pobeda,
                     rezultatIgra.tim1.rezultat,
                     rezultatIgra.tim2.rezultat
                 );
                 azurirajTabelu(polozaji[group],
-                    rezultatIgra.tim2, rezultatIgra.tim2.pobeda,
+                    rezultatIgra.tim2,
+                    rezultatIgra.tim2.pobeda,
                     rezultatIgra.tim2.rezultat, 
                     rezultatIgra.tim1.rezultat);
             }
