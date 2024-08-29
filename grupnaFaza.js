@@ -141,8 +141,11 @@ const simulacijaGrupneFaze = () => {
         const timovi = Object.values(polozaji[group]);
         const sortiraniTimovi = sortirajTimove(timovi);
 
+        //console.log(sortiraniTimovi);
+
         console.log(`   Grupa ${group} (Tim - pobede / porazi / bodovi / postignuto koševa / primljeno koševa / koš razlika): `);
         sortiraniTimovi.forEach((tim, index) => {
+            //console.log(tim);
             const kosRazlika = tim.postignuto - tim.primljeno;
             console.log(`       ${index + 1}. ${tim.ime}: ${tim.pobede} / ${tim.porazi} / ${tim.poeni} / ${tim.postignuto} / ${tim.primljeno} / ${kosRazlika > 0 ? '+' : ''}${kosRazlika}`);
             //Prva 3 tima iz svake grupe se dodaju u niz sviTimovi
