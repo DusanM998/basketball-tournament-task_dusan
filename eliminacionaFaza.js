@@ -165,12 +165,15 @@ const formiranjeZreba = (rangiraniTimovi) => {
     console.log("\nUtakmica za treće mesto:");
     const rezultatZaTreceMesto = simulacijaPolufinalaFinala(porazeniPolufinale[0], porazeniPolufinale[1]);
     const bronzanaMedalja = rezultatZaTreceMesto.tim1.pobeda ? rezultatZaTreceMesto.tim1 : rezultatZaTreceMesto.tim2;
+    //console.log(bronzanaMedalja);
     console.log(`   ${rezultatZaTreceMesto.tim1.ime} - ${rezultatZaTreceMesto.tim2.ime} | Rezultat: ${rezultatZaTreceMesto.tim1.rezultat} - ${rezultatZaTreceMesto.tim2.rezultat} | Bronza: ${bronzanaMedalja.ime}`);
 
     // Finale
     console.log("\nFinale:");
     const rezultatFinala = simulacijaPolufinalaFinala(finalisti[0], finalisti[1]);
+    //console.log(rezultatFinala);
     const zlatnaMedalja = rezultatFinala.tim1.pobeda ? rezultatFinala.tim1 : rezultatFinala.tim2;
+    //console.log(zlatnaMedalja);
     const srebrnaMedalja = rezultatFinala.tim1.pobeda ? rezultatFinala.tim2 : rezultatFinala.tim1;
     console.log(`   ${rezultatFinala.tim1.ime} - ${rezultatFinala.tim2.ime} | Rezultat: ${rezultatFinala.tim1.rezultat} - ${rezultatFinala.tim2.rezultat} | Zlato: ${zlatnaMedalja.ime} | Srebro: ${srebrnaMedalja.ime}`);
 
