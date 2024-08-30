@@ -116,6 +116,7 @@ const simulacijaGrupneFaze = () => {
                 //Vraca objekat koji sadrzi info. o rezultatu utakmice odigranih timova
                 const rezultatIgra = simulacijaIgre(timovi[i], timovi[j]);
                 //console.log(rezultatIgra);
+                //console.log(polozaji[group]);
                 console.log(`        ${rezultatIgra.tim1.ime} - ${rezultatIgra.tim2.ime} (${rezultatIgra.tim1.rezultat}: ${rezultatIgra.tim2.rezultat})`);
                 azurirajTabelu(polozaji[group],
                     rezultatIgra.tim1,
@@ -128,6 +129,7 @@ const simulacijaGrupneFaze = () => {
                     rezultatIgra.tim2.pobeda,
                     rezultatIgra.tim2.rezultat, 
                     rezultatIgra.tim1.rezultat);
+                
             }
         }
     });
